@@ -4,6 +4,7 @@ import com.minh1952.Indentity_Service.Entity.User;
 import com.minh1952.Indentity_Service.Service.UserService;
 import com.minh1952.Indentity_Service.dto.request.UserCreationRequest;
 import com.minh1952.Indentity_Service.dto.request.UserUpdateRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody UserCreationRequest request){
+    User createUser(@RequestBody @Valid UserCreationRequest request){
         return userService.createUser(request);
     }
 
@@ -31,8 +32,8 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @PutMapping("/{userId}")
-    User updateUser(@PathVariable String userId ,@RequestBody UserUpdateRequest request){
+    @PutMapping("/{userId}")                                // @Valid : kiểm tra tính hợp lệ trong dữ liệu của request
+    User updateUser(@PathVariable String userId ,@RequestBody @Valid UserUpdateRequest request){
         return userService.updateUser(userId,request);
     }
 

@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity //đánh dấu class là 1 table
@@ -16,7 +17,6 @@ public class User {
     private String username;
     private String password;
     private String firstName;
-
     private String lastName;
 
     public String getId() {
