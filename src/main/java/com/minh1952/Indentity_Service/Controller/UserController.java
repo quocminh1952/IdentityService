@@ -1,7 +1,9 @@
 package com.minh1952.Indentity_Service.Controller;
 
 import com.minh1952.Indentity_Service.Entity.User;
+import com.minh1952.Indentity_Service.Exception.AppException;
 import com.minh1952.Indentity_Service.Service.UserService;
+import com.minh1952.Indentity_Service.dto.request.ApiResponse;
 import com.minh1952.Indentity_Service.dto.request.UserCreationRequest;
 import com.minh1952.Indentity_Service.dto.request.UserUpdateRequest;
 import jakarta.validation.Valid;
@@ -18,8 +20,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody @Valid UserCreationRequest request){
-        return userService.createUser(request);
+    ApiResponse createUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse apiResponse = new ApiResponse<>();
+        apiResponse.setResult(userService.createUser(request));
+        return apiResponse;
     }
 
     @GetMapping("/{userId}")
