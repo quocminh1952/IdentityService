@@ -1,6 +1,8 @@
 package com.minh1952.Indentity_Service.Service;
 
 import com.minh1952.Indentity_Service.Entity.User;
+import com.minh1952.Indentity_Service.Exception.AppException;
+import com.minh1952.Indentity_Service.Exception.ErrorCode;
 import com.minh1952.Indentity_Service.Repository.userRepository;
 import com.minh1952.Indentity_Service.dto.request.UserCreationRequest;
 import com.minh1952.Indentity_Service.dto.request.UserUpdateRequest;
@@ -20,7 +22,7 @@ public class UserService {
         User user = new User();
 
         if(userRepository.existsByUsername(request.getUsername()))
-            throw new RuntimeException("User name Existed");
+            throw new AppException(ErrorCode.USER_EXISTED);
 
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
