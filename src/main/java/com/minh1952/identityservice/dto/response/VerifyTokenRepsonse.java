@@ -3,12 +3,13 @@ package com.minh1952.identityservice.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
+
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthResponse {
-    String token;
-    Boolean Authenticate;
+@FieldDefaults( level = AccessLevel.PRIVATE)
+public class VerifyTokenRepsonse {
+    boolean valid;
 }
