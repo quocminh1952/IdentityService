@@ -90,7 +90,7 @@ public class AuthService {
                 .issuer("minh1952") // người phát hành
                 .issueTime(new Date()) // thời gian phát hành
                 .expirationTime(new Date(System.currentTimeMillis() + 3600*1000))
-                .claim("CustomClaim","Custom")
+                .claim("role","USER")
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());

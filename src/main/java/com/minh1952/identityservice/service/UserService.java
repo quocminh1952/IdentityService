@@ -4,6 +4,7 @@ import com.minh1952.identityservice.dto.request.UserCreationRequest;
 import com.minh1952.identityservice.dto.request.UserUpdateRequest;
 import com.minh1952.identityservice.dto.response.UserResponse;
 import com.minh1952.identityservice.entity.User;
+import com.minh1952.identityservice.enums.Role;
 import com.minh1952.identityservice.exception.AppException;
 import com.minh1952.identityservice.exception.ErrorCode;
 import com.minh1952.identityservice.mapper.UserMapper;
@@ -15,7 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,11 @@ public class UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         // mã hóa password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        // vì role là 1 kiểu Set<String> nên phải truyền vào setRoles kiểu tương ứng:
+        Set<String> Roles = new HashSet<>(); // HashSet : không cho phép lưu cac gia trị trùng lặp
+        Roles.add(Role.USER.name());
+
+        user.setRoles(Roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
