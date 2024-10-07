@@ -4,6 +4,8 @@ import com.minh1952.identityservice.dto.request.AuthRequest;
 import com.minh1952.identityservice.dto.request.VerifyTokenRequest;
 import com.minh1952.identityservice.dto.response.AuthResponse;
 import com.minh1952.identityservice.dto.response.VerifyTokenRepsonse;
+import com.minh1952.identityservice.entity.User;
+import com.minh1952.identityservice.enums.Role;
 import com.minh1952.identityservice.exception.AppException;
 import com.minh1952.identityservice.exception.ErrorCode;
 import com.minh1952.identityservice.repository.UserRepository;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -73,7 +77,7 @@ public class AuthService {
         if(!authenticated)
             throw new AppException(ErrorCode.NON_AUTHENTICATED);
 
-        String token = generateToken(request.getUsername());
+        String token = generateToken(user);
 
         return  AuthResponse.builder()
                 .Authenticate(authenticated)
@@ -81,16 +85,17 @@ public class AuthService {
                 .build();
     }
 
-    private String generateToken(String username){
+    // Tạo token khi login
+    private String generateToken(User user){
         //create header
         JWSHeader jwtHeader = new JWSHeader(JWSAlgorithm.HS512);
         //create payload
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username) // đại diện thông tin đăng nhập
+                .subject(user.getUsername()) // đại diện thông tin đăng nhập
                 .issuer("minh1952") // người phát hành
                 .issueTime(new Date()) // thời gian phát hành
                 .expirationTime(new Date(System.currentTimeMillis() + 3600*1000))
-                .claim("role","USER")
+                .claim("scope", BuildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -106,5 +111,12 @@ public class AuthService {
         }
 
     }
+
+    // Phương thức truyền giá trị scope cho JWT : lấy ra cac quyền và tạo thành một chuỗi cách nhau bởi space
+    private String BuildScope(User user){
+        return user.getRoles().stream() // stream : Api để xử lý dữ liệu cho các tập dữ liệu (Set, List ...)
+                .collect(Collectors.joining(" ")); // bộ thu collect sử dụng Collectors.joining để tạo ra một chuỗi có dấu phân cách
+    }
+
 
 }
