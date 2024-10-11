@@ -10,11 +10,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -37,7 +37,8 @@ public class UserController {
     List<UserResponse> getUsers(){
 
         var authentication = SecurityContextHolder.getContext().getAuthentication(); // authentication : đại diện cho thông tin nguoi dung dang xac thuc
-        log.warn("Username: " + authentication.getName());
+        log.warn("Username: " + authentication.getName()); // lấy tên người dùng
+        log.warn("Role    : " + authentication.getAuthorities());// lấy quyền người dùng
 
         return userService.getUsers();
     }
