@@ -1,5 +1,6 @@
 package com.minh1952.identityservice.configuration;
 
+import com.minh1952.identityservice.enums.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ public class SecurityConfig {
                         //cho tất cả yêu cầu POST đến /user không cần xác thực
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
                         // chỉ Admin mới gửi method Get đến /users
-                        .requestMatchers(HttpMethod.GET,"/users").hasAuthority("ROLE_ADMIN")
+                        //.requestMatchers(HttpMethod.GET,"/users").hasRole(Role.ADMIN.name())
                         //tất cả các yêu cầu khác phải xác thực
                         .anyRequest().authenticated());
 

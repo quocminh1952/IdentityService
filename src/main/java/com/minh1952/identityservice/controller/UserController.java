@@ -26,36 +26,48 @@ public class UserController {
 
     @PostMapping
     ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request){
-        ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
-
-        apiResponse.setResult(userService.createUser(request));
-
-        return apiResponse;
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.createUser(request))
+                .build();
     }
 
     @GetMapping
-    List<UserResponse> getUsers(){
+    ApiResponse<List<UserResponse>> getUsers(){
 
         var authentication = SecurityContextHolder.getContext().getAuthentication(); // authentication : đại diện cho thông tin nguoi dung dang xac thuc
         log.warn("Username: " + authentication.getName()); // lấy tên người dùng
         log.warn("Role    : " + authentication.getAuthorities());// lấy quyền người dùng
-
-        return userService.getUsers();
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build();
     }
 
     @GetMapping("/{userId}")
-    UserResponse getUser(@PathVariable("userId") String userId){
-        return userService.getUser(userId);
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(userId))
+                .build();
     }
 
     @PutMapping("/{userId}")
-    UserResponse updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
-        return userService.updateUser(userId, request);
+    ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(userId,request))
+                .build();
     }
 
     @DeleteMapping("/{userId}")
-    String deleteUser(@PathVariable String userId){
-        userService.deleteUser(userId);
-        return "User has been deleted";
+    ApiResponse<String> deleteUser(@PathVariable String userId){
+        return ApiResponse.<String>builder()
+                .result("User has been deleted")
+                .build();
     }
+
+    @GetMapping("/myInfo")
+    ApiResponse<UserResponse> myInfo(){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.myInfo())
+                .build();
+    }
+
 }

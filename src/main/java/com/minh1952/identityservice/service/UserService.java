@@ -12,17 +12,23 @@ import com.minh1952.identityservice.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
@@ -58,13 +64,27 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')") // Kiểm tra quyền trước khi gọi method
     public List<UserResponse> getUsers(){
+        log.info("only role admin can access this method !");
         return userRepository.findAll().stream()
                 .map(userMapper::toUserResponse).toList();
     }
-
+    // Kiểm tra quyền sau khi method dc gọi .. nếu k phải ADMIN thì sẽ chặn k cho trả về
+    //@PostAuthorize("hasRole('ADMIN')")
+    // User có thể lấy được thông tin của chính mình
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUser(String id){
         return userMapper.toUserResponse(userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found")));
     }
+
+    // khi user đăng nhập vào hệ thống -> SecurityContextHolder lưu trữ thông tin của người dùng
+    public UserResponse myInfo(){
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User byUserName = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toUserResponse(byUserName);
+    }
+
 }

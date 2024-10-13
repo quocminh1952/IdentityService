@@ -23,7 +23,7 @@ import java.text.ParseException;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 // @RequiredArgsConstructor tìm cac biến là final hoặc notnull và tạo instance cho chúng
-// sau đó tạo tự động tạo Construct và inject các instace vào constructor
+// sau đó tạo tự động tạo Construct và inject các instance vào constructor
 public class AuthenticationController {
 
     AuthService AuthService;
