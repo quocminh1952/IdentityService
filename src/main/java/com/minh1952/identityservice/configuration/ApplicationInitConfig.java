@@ -24,7 +24,7 @@ public class ApplicationInitConfig {
 
     PasswordEncoder passwordEncoder;
 
-
+// Khởi tạo Admin
     ApplicationRunner applicationRunner(UserRepository userRepository){
         return args ->{
             if(userRepository.findByUsername("admin").isEmpty()){
